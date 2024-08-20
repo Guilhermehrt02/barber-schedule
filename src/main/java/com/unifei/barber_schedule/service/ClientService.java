@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service // Indicates that the class provides some business services
 public class ClientService {
 
-    @Autowired // field-based dependency injection. Be able to use the methods from the repository
     private ClientRepository clientRepository;
+
+    @Autowired // Constructor-based dependency injection. Be able to use the methods from the repository without creating a new instance of it.
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     // CRUD methods. Service layer calls the repository layer methods already implemented.
 
@@ -22,8 +26,18 @@ public class ClientService {
     }
 
     // find client by id
-    public Optional<Client> findById(int id) {
-        return clientRepository.findById(id);
+    public Client findById(int id) {
+        Optional<Client> result = clientRepository.findById(id);
+
+        Client client = null;
+
+        if (result.isPresent()) {
+            client = result.get();
+        } else {
+            throw new RuntimeException("Client id not found - " + id);
+        }
+
+        return client;
     }
 
     // save client

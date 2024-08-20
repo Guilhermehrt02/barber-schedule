@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 public class AppointmentService {
 
-    @Autowired // field-based dependency injection. Be able to use the methods from the repository
     private AppointmentRepository appointmentRepository;
+
+    @Autowired // Constructor-based dependency injection. Be able to use the methods from the repository without creating a new instance of it.
+    public AppointmentService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+    }
 
     // CRUD methods. Service layer calls the repository layer methods already implemented.
 
@@ -22,8 +26,18 @@ public class AppointmentService {
     }
 
     // find appointment by id
-    public Optional<Appointment> findById(int id){
-        return appointmentRepository.findById(id);
+    public Appointment findById(int id){
+        Optional<Appointment> result = appointmentRepository.findById(id);
+
+        Appointment appointment = null;
+
+        if (result.isPresent()) {
+            appointment = result.get();
+        } else {
+            throw new RuntimeException("Appointment id not found - " + id);
+        }
+
+        return appointment;
     }
 
     // save appointment

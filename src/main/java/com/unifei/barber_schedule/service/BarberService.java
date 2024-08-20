@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 public class BarberService {
 
-    @Autowired // field-based dependency injection. Be able to use the methods from the repository
     private BarberRepository barberRepository;
+
+    @Autowired // Constructor-based dependency injection. Be able to use the methods from the repository without creating a new instance of it.
+    public BarberService(BarberRepository barberRepository) {
+        this.barberRepository = barberRepository;
+    }
 
     // CRUD methods. Service layer calls the repository layer methods already implemented.
 
@@ -22,8 +26,18 @@ public class BarberService {
     }
 
     // find barber by id
-    public Optional<Barber> findById(int id){
-        return barberRepository.findById(id);
+    public Barber findById(int id){
+        Optional<Barber> result = barberRepository.findById(id);
+
+        Barber barber = null;
+
+        if (result.isPresent()) {
+            barber = result.get();
+        } else {
+            throw new RuntimeException("Barber id not found - " + id);
+        }
+
+        return barber;
     }
 
     // save barber
