@@ -1,52 +1,60 @@
-USE `barberschedule`;
+-- Criação do banco de dados
+create database if not exists barberschedule;
 
--- Table structure for table `client`
-CREATE TABLE `client` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL UNIQUE,
-  `phone` varchar(20) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+-- Seleção do banco de dados
+use barberschedule;
 
--- Table structure for table `barber`
-CREATE TABLE `barber` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+-- Exclusão das tabelas existentes, se houver
+drop table if exists barber_service;
+drop table if exists appointment;
+drop table if exists service;
+drop table if exists client;
+drop table if exists barber;
 
--- Table structure for table `service`
-CREATE TABLE `service` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL UNIQUE,
-  `price` double NOT NULL,
-  `duration` int NOT NULL, -- Duration in minutes
-  `barber_id` int NOT NULL,
-  `active` boolean NOT NULL DEFAULT TRUE,
-  `deleted` boolean NOT NULL DEFAULT FALSE,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`barber_id`) REFERENCES `barber`(`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+-- Criação da tabela client
+create table client (
+    id int auto_increment primary key,
+    name varchar(255) not null,
+    email varchar(255) not null unique,
+    phone varchar(50),
+    password varchar(255) not null
+);
 
--- Table structure for table `appointment`
-CREATE TABLE `appointment` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `date_time` datetime NOT NULL,
-  `service_id` int NOT NULL,
-  `client_id` int NOT NULL,
-  `barber_id` int NOT NULL,
-  `confirmed` boolean NOT NULL,
-  `canceled` boolean NOT NULL,
-  `finished` boolean NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`service_id`) REFERENCES `service`(`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`client_id`) REFERENCES `client`(`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`barber_id`) REFERENCES `barber`(`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+-- Criação da tabela service
+create table service (
+    id int auto_increment primary key,
+    name varchar(255) not null unique,
+    price decimal(10, 2) not null,
+    duration int not null
+);
+
+-- Criação da tabela barber
+create table barber (
+    id int auto_increment primary key,
+    name varchar(255) not null,
+    email varchar(255) not null unique,
+    phone varchar(50),
+    password varchar(255) not null
+);
+
+-- Criação da tabela appointment
+create table appointment (
+    id int auto_increment primary key,
+    date date not null,
+    time time not null,
+    service_id int not null,
+    client_id int not null,
+    barber_id int not null,
+    foreign key (service_id) references service(id) on delete cascade,
+    foreign key (client_id) references client(id) on delete cascade,
+    foreign key (barber_id) references barber(id) on delete cascade
+);
+
+-- Criação da tabela de relação many-to-many entre barber e service
+create table barber_service (
+    barber_id int not null,
+    service_id int not null,
+    primary key (barber_id, service_id),
+    foreign key (barber_id) references barber(id) on delete cascade,
+    foreign key (service_id) references service(id) on delete cascade
+);

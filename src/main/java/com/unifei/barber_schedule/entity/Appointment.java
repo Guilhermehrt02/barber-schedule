@@ -1,16 +1,12 @@
 package com.unifei.barber_schedule.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
-
-//INCOMPLETA - ALTERAR OS ENDPOINTS
-
-
 
 @Entity
 @Getter
@@ -22,20 +18,25 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
     @Column(nullable = false)
     private String date;
 
+    @NotNull
     @Column(nullable = false)
     private String time;
 
+    @NotNull
     @ManyToOne // Many appointments can have one service
     @JoinColumn(name = "service_id", nullable = false) // The column name in the database
     private Service service;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "barber_id", nullable = false)
     private Barber barber;

@@ -1,7 +1,6 @@
 package com.unifei.barber_schedule.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,22 +13,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Barber {
+public class Barber extends User {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY) // Auto increment
-    private int id;
-
-    @NotBlank // Ensures the name is not null, not empty, and contains non-whitespace characters
-    @Column(nullable = false) // Ensures the name column cannot be null in the database
-    private String name;
-
-    @NotBlank
-    @Email // Ensures the email is a valid email address
-    @Column(nullable = false, unique = true, length = 255)
-    private String email;
-
-    @OneToMany(mappedBy = "barber", cascade = CascadeType.ALL, orphanRemoval = true) // One barber can have many appointments
+    @OneToMany(mappedBy = "barber", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appointment> appointments = new ArrayList<>();
 
     @ManyToMany
@@ -40,9 +26,7 @@ public class Barber {
     )
     private List<Service> services = new ArrayList<>();
 
-    public Barber(@NotBlank String name, String phone) {
-        this.name = name;
-        this.email = phone;
+    public Barber(@NotBlank String name, @NotBlank String email, String phone, String password) {
+        super(name, email, phone, password); // Chama o construtor da superclasse
     }
-
 }

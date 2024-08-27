@@ -72,4 +72,5 @@ public class AppointmentController {
         return "Deleted appointment id - " + appointmentId;
     }
 
+
 }
