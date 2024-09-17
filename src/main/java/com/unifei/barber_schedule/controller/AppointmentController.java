@@ -1,10 +1,16 @@
 package com.unifei.barber_schedule.controller;
 
 import com.unifei.barber_schedule.entity.Appointment;
+import com.unifei.barber_schedule.entity.Barber;
 import com.unifei.barber_schedule.service.AppointmentService;
+import com.unifei.barber_schedule.service.BarberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -12,65 +18,58 @@ import java.util.List;
 public class AppointmentController {
 
     private AppointmentService appointmentService;
+    private BarberService barberService;
 
     @Autowired
-    public AppointmentController (AppointmentService appointmentService) {
+    public AppointmentController (AppointmentService appointmentService,
+                                  BarberService barberService) {
         this.appointmentService = appointmentService;
+        this.barberService = barberService;
     }
 
-    // Here we can create the methods that will be called by the client side.
-
-    //Get all appointments
-    @GetMapping
-    public List<Appointment> findAll() {
-        return appointmentService.findAll();
+    // Obter horários disponíveis para um barbeiro em uma data específica
+    @GetMapping("/available-times")
+    public ResponseEntity<List<LocalTime>> getAvailableTimes(@RequestParam int barberId, @RequestParam String date, @RequestParam int serviceDuration) {
+        Barber barber = barberService.findById(barberId);
+        LocalDate appointmentDate = LocalDate.parse(date);
+        List<LocalTime> availableTimes = appointmentService.getAvailableTimesForBarber(barber, appointmentDate, serviceDuration);
+        return ResponseEntity.ok(availableTimes);
     }
 
-    //Get appointment by id
-    @GetMapping("/{appointmentId}")
-    public Appointment getAppointment(@PathVariable int appointmentId) {
 
-        Appointment appointment = appointmentService.findById(appointmentId);
-
-        if (appointment == null) {
-            throw new RuntimeException("Appointment id not found - " + appointmentId);
-        }
-        return appointment;
-    }
-
-    //Create appointment
+    // Criar agendamento (pode ser acessado por clientes e admin)
     @PostMapping
-    public Appointment CreateAppointment(@RequestBody Appointment appointment) {
-
-        appointment.setId(0); // This way we can save a new appointment instead of updating an existing one
-        Appointment dbAppointment = appointmentService.save(appointment);
-
-        return dbAppointment;
+    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
+        Appointment newAppointment = appointmentService.createAppointment(appointment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAppointment);
     }
 
-    //Update appointment
-    @PutMapping
-    public Appointment updateAppointment(@RequestBody Appointment appointment) {
-
-        Appointment dbAppointment = appointmentService.save(appointment);
-
-        return dbAppointment;
+    // Obter agendamento por ID (clientes podem acessar os seus próprios, admin pode acessar qualquer um)
+    @GetMapping("/{id}")
+    public ResponseEntity<Appointment> getAppointmentById(@PathVariable int id) {
+        Appointment appointment = appointmentService.getAppointmentById(id);
+        return ResponseEntity.ok(appointment);
     }
 
-    //Delete appointment
-    @DeleteMapping("/{appointmentId}")
-    public String deleteAppointment(@PathVariable int appointmentId) {
-
-        Appointment appointment = appointmentService.findById(appointmentId);
-
-        if (appointment == null) {
-            throw new RuntimeException("Appointment id not found - " + appointmentId);
-        }
-
-        appointmentService.deleteById(appointmentId);
-
-        return "Deleted appointment id - " + appointmentId;
+    // Obter todos os agendamentos de um cliente
+    @GetMapping("/client/{clientId}")
+    public ResponseEntity<List<Appointment>> getAppointmentsByClientId(@PathVariable int clientId) {
+        List<Appointment> appointments = appointmentService.getAppointmentsByClientId(clientId);
+        return ResponseEntity.ok(appointments);
     }
 
+    // Atualizar agendamento
+    @PutMapping()
+    public ResponseEntity<Appointment> updateAppointment(@RequestBody Appointment appointmentDetails) {
+        Appointment updatedAppointment = appointmentService.updateAppointment(appointmentDetails);
+        return ResponseEntity.ok(updatedAppointment);
+    }
+
+    // Deletar agendamento
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAppointment(@PathVariable int id) {
+        appointmentService.deleteAppointment(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

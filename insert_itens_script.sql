@@ -1,5 +1,9 @@
 USE barberschedule;
 
+-- Inserção de dados na tabela admin
+insert into admin (name, email, phone, password) values 
+('Carlos Mendes', 'carlos.mendes@example.com', '444555666', 'adminpassword');
+
 -- Inserção de dados na tabela service
 insert into service (name, price, duration) values 
 ('Corte de Cabelo', 30.00, 30),
@@ -18,13 +22,13 @@ insert into client (name, email, phone, password) values
 
 -- Inserção de dados na tabela appointment
 insert into appointment (date, time, service_id, client_id, barber_id) values 
-('2024-08-25', '10:00:00', 1, 1, 1), -- Corte de Cabelo com João Silva para Pedro Costa
-('2024-08-26', '14:00:00', 2, 2, 2), -- Barba com Maria Oliveira para Ana Souza
-('2024-08-27', '16:00:00', 3, 1, 2); -- Corte e Barba com Maria Oliveira para Pedro Costa
+('2024-08-25', '10:00:00', 1, (select id from client where email = 'pedro.costa@example.com'), (select id from barber where email = 'joao.silva@example.com')), -- Corte de Cabelo com João Silva para Pedro Costa
+('2024-08-26', '14:00:00', 2, (select id from client where email = 'ana.souza@example.com'), (select id from barber where email = 'maria.oliveira@example.com')), -- Barba com Maria Oliveira para Ana Souza
+('2024-08-27', '16:00:00', 3, (select id from client where email = 'pedro.costa@example.com'), (select id from barber where email = 'maria.oliveira@example.com')); -- Corte e Barba com Maria Oliveira para Pedro Costa
 
 -- Inserção de dados na tabela barber_service
 insert into barber_service (barber_id, service_id) values 
-(1, 1), -- João Silva oferece Corte de Cabelo
-(1, 3), -- João Silva oferece Corte e Barba
-(2, 2), -- Maria Oliveira oferece Barba
-(2, 3); -- Maria Oliveira oferece Corte e Barba
+((select id from barber where email = 'joao.silva@example.com'), 1), -- João Silva oferece Corte de Cabelo
+((select id from barber where email = 'joao.silva@example.com'), 3), -- João Silva oferece Corte e Barba
+((select id from barber where email = 'maria.oliveira@example.com'), 2), -- Maria Oliveira oferece Barba
+((select id from barber where email = 'maria.oliveira@example.com'), 3); -- Maria Oliveira oferece Corte e Barba

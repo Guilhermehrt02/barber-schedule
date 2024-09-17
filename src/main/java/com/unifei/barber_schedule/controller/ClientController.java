@@ -2,6 +2,8 @@ package com.unifei.barber_schedule.controller;
 
 import com.unifei.barber_schedule.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.unifei.barber_schedule.entity.Client;
 
@@ -20,65 +22,42 @@ public class ClientController {
 
     // Here we can create the methods that will be called by the client side.
 
-    //Get all clients
-    @GetMapping
-    public List<Client> findAll() {
-        return clientService.findAll();
+
+    //Register a new client
+    @PostMapping("/register")
+    public ResponseEntity<?> registerClient(@RequestBody Client client) {
+
+        Client newClient = clientService.registerClient(client);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newClient);
     }
+
+    //Get all clients
 
     //Get client by id
-    @GetMapping("/{clientId}")
-    public Client getClient(@PathVariable int clientId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Client> getClientById(@PathVariable int id) {
 
-        Client client = clientService.findById(clientId);
+        Client client = clientService.getClientById(id);
 
-        if (client == null) {
-            throw new RuntimeException("Client id not found - " + clientId);
-        }
-        return client;
-    }
-
-    //Create client
-    @PostMapping
-    public Client addClient(@RequestBody Client client) {
-
-        client.setId(0); // This way we can save a new client instead of updating an existing one
-        Client dbClient = clientService.save(client);
-
-        return dbClient;
+        return ResponseEntity.ok(client);
     }
 
     //Update client
-    @PutMapping
-    public Client updateClient(@RequestBody Client client) {
+    @PutMapping()
+    public ResponseEntity<Client> updateClient(@RequestBody Client updatedClient) {
 
-//        Client dbClient = clientService.save(client);
-//
-//        return dbClient;
+        Client client = clientService.updateClient(updatedClient.getId(), updatedClient);
 
-        Client existingClient = clientService.findById(client.getId());
-
-        existingClient.setName(client.getName());
-        existingClient.setEmail(client.getEmail());
-        existingClient.setPhone(client.getPhone());
-        existingClient.setPassword(client.getPassword());
-
-        return clientService.save(existingClient);
+        return ResponseEntity.ok(client);
     }
 
     //Delete client
-    @DeleteMapping("/{clientId}")
-    public String deleteClient(@PathVariable int clientId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteClient(@PathVariable int id) {
 
-        Client client = clientService.findById(clientId);
+        clientService.deleteClient(id);
 
-        if (client == null) {
-            throw new RuntimeException("Client id not found - " + clientId);
-        }
-
-        clientService.deleteById(clientId);
-
-        return "Deleted client id - " + clientId;
+        return ResponseEntity.ok("Client has been successfully deleted.");
     }
 
 }

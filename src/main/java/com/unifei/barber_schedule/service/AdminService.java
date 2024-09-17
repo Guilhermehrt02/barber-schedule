@@ -21,27 +21,6 @@ public class AdminService {
         this.adminRepository = adminRepository;
     }
 
-    private ClientRepository clientRepository;
-
-    @Autowired
-    public AdminService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
-
-    private BarberRepository barberRepository;
-
-    @Autowired
-    public AdminService(BarberRepository barberRepository) {
-        this.barberRepository = barberRepository;
-    }
-
-    private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    public AdminService(AppointmentRepository appointmentRepository) {
-        this.appointmentRepository = appointmentRepository;
-    }
-
     // CRUD methods. Service layer calls the repository layer methods already implemented.
 
     // find all admins
@@ -74,5 +53,4 @@ public class AdminService {
         adminRepository.deleteById(id);
     }
 
-    // ge
 }

@@ -10,8 +10,9 @@ drop table if exists appointment;
 drop table if exists service;
 drop table if exists client;
 drop table if exists barber;
+drop table if exists admin;
 
--- Criação da tabela client
+-- Tabela Client
 create table client (
     id int auto_increment primary key,
     name varchar(255) not null,
@@ -28,7 +29,7 @@ create table service (
     duration int not null
 );
 
--- Criação da tabela barber
+-- Tabela Barber
 create table barber (
     id int auto_increment primary key,
     name varchar(255) not null,
@@ -37,7 +38,16 @@ create table barber (
     password varchar(255) not null
 );
 
--- Criação da tabela appointment
+-- Tabela Admin
+create table admin (
+    id int auto_increment primary key,
+    name varchar(255) not null,
+    email varchar(255) not null unique,
+    phone varchar(50),
+    password varchar(255) not null
+);
+
+-- Tabela Appointment
 create table appointment (
     id int auto_increment primary key,
     date date not null,
@@ -50,7 +60,7 @@ create table appointment (
     foreign key (barber_id) references barber(id) on delete cascade
 );
 
--- Criação da tabela de relação many-to-many entre barber e service
+-- Tabela Barber_Service
 create table barber_service (
     barber_id int not null,
     service_id int not null,
@@ -58,3 +68,4 @@ create table barber_service (
     foreign key (barber_id) references barber(id) on delete cascade,
     foreign key (service_id) references service(id) on delete cascade
 );
+

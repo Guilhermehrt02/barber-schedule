@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -20,11 +22,11 @@ public class Appointment {
 
     @NotNull
     @Column(nullable = false)
-    private String date;
+    private LocalDate date;
 
     @NotNull
     @Column(nullable = false)
-    private String time;
+    private LocalTime time;
 
     @NotNull
     @ManyToOne // Many appointments can have one service
@@ -41,7 +43,7 @@ public class Appointment {
     @JoinColumn(name = "barber_id", nullable = false)
     private Barber barber;
 
-    public Appointment(String date, String time, Service service, Client client, Barber barber) {
+    public Appointment(LocalDate date, LocalTime time, Service service, Client client, Barber barber) {
         this.date = date;
         this.time = time;
         this.service = service;
@@ -49,4 +51,13 @@ public class Appointment {
         this.barber = barber;
     }
 
+    public int getBarberId() {
+
+        return barber.getId();
+    }
+
+    public Integer getServiceId() {
+
+        return service.getId();
+    }
 }
