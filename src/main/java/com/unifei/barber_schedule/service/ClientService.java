@@ -31,6 +31,11 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
+    // Get all clients
+    public List<Client> findAll() {
+        return clientRepository.findAll();
+    }
+
     // Get client by id
     public Client getClientById(int id) {
         return clientRepository.findById(id)

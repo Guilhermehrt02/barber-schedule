@@ -58,16 +58,19 @@ class ValidationServiceTest {
         LocalDate date = LocalDate.of(2024, 9, 30);
         LocalTime time = LocalTime.of(10, 0);
         Service serviceObj = new Service("Corte de Cabelo",35.0,40);  // Supondo o construtor de Service
-        Client clientObj = new Client("Cliente teste", "cliente@teste.com", "1234", "1234");  // Supondo o construtor de Client
-        Barber barberObj = new Barber("Barbeiro Teste", "barbeiro@teste.com", "1234", "1234");  // Supondo o construtor de Barber
+        Client clientObj = new Client("Cliente teste", "cliente@teste.com", "1234", "1234");
+        Barber barberObj = new Barber("Barbeiro Teste", "barbeiro@teste.com", "1234", "1234");
+        barberObj.getServices().add(serviceObj);
 
         Appointment appointment = new Appointment(date, time, serviceObj, clientObj, barberObj);
 
-        when(serviceRepository.existsById(serviceObj.getId())).thenReturn(true);
+        Appointment validAppointment = new Appointment(date, LocalTime.of(11, 30), serviceObj, clientObj, barberObj);
+
+
         when(clientRepository.existsById(clientObj.getId())).thenReturn(true);
         when(barberRepository.existsById(barberObj.getId())).thenReturn(true);
 
-        when(appointmentRepository.findByBarberAndDate(barberObj, date)).thenReturn(Collections.emptyList()); // Sem conflito
+        when(appointmentRepository.findByBarberAndDate(barberObj, date)).thenReturn(Collections.singletonList(validAppointment));
 
         validationService.validateAppointment(appointment);
     }
@@ -81,13 +84,13 @@ class ValidationServiceTest {
         Service serviceObj = new Service("Corte de Cabelo", 35.0, 40);
         Client clientObj = new Client("Cliente Teste", "cliente@teste.com", "1234", "1234");
         Barber barberObj = new Barber("Barbeiro Teste", "barbeiro@teste.com","1234", "1234");
+        barberObj.getServices().add(serviceObj);
 
         Appointment newAppointment = new Appointment(date, time, serviceObj, clientObj, barberObj);
 
         // Mockando um agendamento existente que causa conflito
         Appointment conflictingAppointment = new Appointment(date, LocalTime.of(9, 30), serviceObj, clientObj, barberObj);
 
-        when(serviceRepository.existsById(serviceObj.getId())).thenReturn(true);
         when(clientRepository.existsById(clientObj.getId())).thenReturn(true);
         when(barberRepository.existsById(barberObj.getId())).thenReturn(true);
         when(appointmentRepository.findByBarberAndDate(barberObj, date)).thenReturn(Collections.singletonList(conflictingAppointment));
@@ -97,7 +100,7 @@ class ValidationServiceTest {
     }
 
     @Test
-    @DisplayName("Should not allow the creation of an appointment if service does not exist")
+    @DisplayName("Should not allow the creation if the barber does not provide the service")
     void validateAppointmentServiceNotFound() throws Exception {
         // Configuração dos dados de entrada
         LocalDate date = LocalDate.of(2024, 9, 30);
@@ -109,9 +112,11 @@ class ValidationServiceTest {
         Appointment appointment = new Appointment(date, time, serviceObj, clientObj, barberObj);
 
         // Mockando o comportamento dos repositórios para serviço inexistente
-        when(serviceRepository.existsById(serviceObj.getId())).thenReturn(false);
+        when(clientRepository.existsById(clientObj.getId())).thenReturn(true);
+        when(barberRepository.existsById(barberObj.getId())).thenReturn(true);
 
         // Espera que a validação lance uma exceção de serviço não encontrado
         assertThrows(IllegalArgumentException.class, () -> validationService.validateAppointment(appointment));
     }
+
 }

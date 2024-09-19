@@ -3,6 +3,7 @@ package com.unifei.barber_schedule.controller;
 import com.unifei.barber_schedule.entity.Barber;
 import com.unifei.barber_schedule.service.BarberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,59 +21,63 @@ public class BarberController {
 
     // Here we can create the methods that will be called by the client side.
 
+    //register a new barber
+    @PostMapping("/register")
+    public Barber registerBarber(@RequestBody Barber barber) {
+
+        return barberService.registerBarber(barber);
+    }
+
     //Get all barbers
     @GetMapping
-    public List<Barber> findAll() {
-        return barberService.findAll();
+    public ResponseEntity<List<Barber>> findAll() {
+
+        List<Barber> barbers = barberService.findAll();
+        return ResponseEntity.ok(barbers);
     }
 
     //Get barber by id
     @GetMapping("/{barberId}")
-    public Barber getBarber(@PathVariable int barberId) {
+    public ResponseEntity<Barber> getBarber(@PathVariable int barberId) {
 
-        Barber barber = barberService.findById(barberId);
+        Barber barber = barberService.getBarberById(barberId);
 
-        if(barber==null){
-            throw new RuntimeException("Barber id not found - " + barberId);
-        }
-
-        return barber;
+        return ResponseEntity.ok(barber);
     }
 
-    //Create barber
-    @PostMapping
-    public Barber createBarber(@RequestBody Barber barber) {
+    //Get barbers by service id
+    @GetMapping("/services/{serviceId}")
+    public ResponseEntity<List<Barber>> getBarbersByServiceId(@PathVariable int serviceId) {
 
-        barber.setId(0); // This way we can save a new barber instead of updating an existing one
-        Barber dbBarber = barberService.save(barber);
+        List<Barber> barbers = barberService.getBarbersByService(serviceId);
 
-        return dbBarber;
+        return ResponseEntity.ok(barbers);
     }
 
     //Update barber
     @PutMapping
-    public Barber updateBarber(@RequestBody Barber barber) {
+    public ResponseEntity<Barber> updateBarber(@RequestBody Barber updatedBarber) {
 
-        Barber dbBarber = barberService.findById(barber.getId());
+        Barber barber = barberService.updateBarber(updatedBarber);
 
-        dbBarber.setName(barber.getName());
-        dbBarber.setEmail(barber.getEmail());
+        return ResponseEntity.ok(barber);
+    }
 
-        return barberService.save(dbBarber);
+    // Endpoint para vincular um serviço a um barbeiro
+    @PostMapping("/{barberId}/services/{serviceId}")
+    public ResponseEntity<String> assignServiceToBarber(@PathVariable int barberId, @PathVariable int serviceId) {
+
+        barberService.assignServiceToBarber(barberId, serviceId);
+        return ResponseEntity.ok("Service assigned to barber successfully");
     }
 
     //Delete barber
     @DeleteMapping("/{barberId}")
-    public String deleteBarber(@PathVariable int barberId) {
+    public ResponseEntity<String> deleteBarber(@PathVariable int barberId) {
 
-        Barber barber = barberService.findById(barberId);
+        barberService.deleteBarber(barberId);
 
-        if(barber==null){
-            throw new RuntimeException("Barber id not found - " + barberId);
-        }
-
-        barberService.deleteById(barberId);
-
-        return "Deleted barber id - " + barberId;
+        return ResponseEntity.ok("Deleted barber id - " + barberId);
     }
+
 }

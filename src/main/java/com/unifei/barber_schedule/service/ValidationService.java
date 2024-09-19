@@ -1,6 +1,7 @@
 package com.unifei.barber_schedule.service;
 
 import com.unifei.barber_schedule.entity.Appointment;
+import com.unifei.barber_schedule.entity.Barber;
 import com.unifei.barber_schedule.repository.AppointmentRepository;
 import com.unifei.barber_schedule.repository.BarberRepository;
 import com.unifei.barber_schedule.repository.ClientRepository;
@@ -30,8 +31,11 @@ public class ValidationService {
     public void validateAppointment(Appointment appointment) {
 
         // Validação para garantir que o serviço existe
-        if (!serviceRepository.existsById(appointment.getService().getId())) {
-            throw new IllegalArgumentException("Service not found.");
+
+        Barber barber = appointment.getBarber();
+
+        if (!barber.getServices().contains(appointment.getService())) {
+            throw new IllegalArgumentException("The barber does not provide this service.");
         }
 
         // Validação para garantir que o cliente existe

@@ -22,6 +22,7 @@ public class ClientController {
 
     // Here we can create the methods that will be called by the client side.
 
+    //adicionar outrs endpoints para usar as funcoes criadas no service
 
     //Register a new client
     @PostMapping("/register")
@@ -32,6 +33,10 @@ public class ClientController {
     }
 
     //Get all clients
+    public ResponseEntity<List<Client>> findAll() {
+        List<Client> clients = clientService.findAll();
+        return ResponseEntity.ok(clients);
+    }
 
     //Get client by id
     @GetMapping("/{id}")

@@ -30,9 +30,11 @@ public class AppointmentController {
     // Obter horários disponíveis para um barbeiro em uma data específica
     @GetMapping("/available-times")
     public ResponseEntity<List<LocalTime>> getAvailableTimes(@RequestParam int barberId, @RequestParam String date, @RequestParam int serviceDuration) {
-        Barber barber = barberService.findById(barberId);
+
+        Barber barber = barberService.getBarberById(barberId);
         LocalDate appointmentDate = LocalDate.parse(date);
         List<LocalTime> availableTimes = appointmentService.getAvailableTimesForBarber(barber, appointmentDate, serviceDuration);
+
         return ResponseEntity.ok(availableTimes);
     }
 
