@@ -1,5 +1,6 @@
 package com.unifei.barber_schedule.entity;
 
+import com.unifei.barber_schedule.security.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@DiscriminatorValue("BARBER")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,6 +29,7 @@ public class Barber extends User {
     private List<Service> services = new ArrayList<>();
 
     public Barber(@NotBlank String name, @NotBlank String email, String phone, String password) {
-        super(name, email, phone, password); // Chama o construtor da superclasse
+        super(name, email, phone, password, Role.BARBER); // Chama o construtor da superclasse
     }
+
 }

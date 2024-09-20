@@ -3,6 +3,8 @@ package com.unifei.barber_schedule.controller;
 import com.unifei.barber_schedule.entity.Admin;
 import com.unifei.barber_schedule.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/admins")
 public class AdminController {
 
-    private AdminService adminService;
+    private final AdminService adminService;
 
     @Autowired
     public AdminController(AdminService adminService) {
@@ -20,54 +22,46 @@ public class AdminController {
 
     // Here we can create the methods that will be called by the client side.
 
+    //register a new admin
+    @PostMapping("/register")
+    public ResponseEntity<?> registerAdmin(@RequestBody Admin admin) {
+
+        Admin newAdmin = adminService.registerAdmin(admin);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAdmin);
+    }
+
+
     //Get all admins
     @GetMapping
-    public List<Admin> findAll() {
-        return adminService.findAll();
+    public ResponseEntity<List<Admin>> findAll() {
+        List<Admin> admins = adminService.findAll();
+        return ResponseEntity.ok(admins);
     }
 
     //Get admin by id
     @GetMapping("/{adminId}")
-    public Admin getAdmin(@PathVariable int adminId) {
+    public ResponseEntity<Admin> getAdmin(@PathVariable int adminId) {
 
-        Admin admin = adminService.findById(adminId);
+        Admin admin = adminService.getAdminById(adminId);
 
-        if (admin == null) {
-            throw new RuntimeException("Admin id not found - " + adminId);
-        }
-        return admin;
-    }
-
-    //Create admin
-    @PostMapping
-    public Admin addAdmin(@RequestBody Admin admin) {
-
-        admin.setId(0); // This way we can save a new admin instead of updating an existing one
-        Admin dbAdmin = adminService.save(admin);
-
-        return dbAdmin;
+        return ResponseEntity.ok(admin);
     }
 
     //Update admin
     @PutMapping
-    public Admin updateAdmin(@RequestBody Admin admin) {
-        Admin dbAdmin = adminService.save(admin);
+    public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin) {
 
-        return dbAdmin;
+        Admin Admin = adminService.updateAdmin(admin);
+
+        return ResponseEntity.ok(Admin);
     }
 
     //Delete admin
     @DeleteMapping("/{adminId}")
-    public String deleteAdmin(@PathVariable int adminId) {
+    public ResponseEntity<String> deleteAdmin(@PathVariable int adminId) {
 
-        Admin admin = adminService.findById(adminId);
+        adminService.deleteAdmin(adminId);
 
-        if (admin == null) {
-            throw new RuntimeException("Admin id not found - " + adminId);
-        }
-
-        adminService.deleteById(adminId);
-
-        return "Deleted admin id - " + adminId;
+        return ResponseEntity.ok("Deleted Admin id - " + adminId);
     }
 }

@@ -5,6 +5,7 @@ import com.unifei.barber_schedule.repository.AdminRepository;
 import com.unifei.barber_schedule.repository.AppointmentRepository;
 import com.unifei.barber_schedule.repository.BarberRepository;
 import com.unifei.barber_schedule.repository.ClientRepository;
+import com.unifei.barber_schedule.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,34 +24,54 @@ public class AdminService {
 
     // CRUD methods. Service layer calls the repository layer methods already implemented.
 
-    // find all admins
+    // register a new admin
+    public Admin registerAdmin(Admin admin) {
+
+        if (adminRepository.findByEmail(admin.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already registered - " + admin.getEmail());
+        }
+
+        admin.setId(0); // Ensure the admin is new
+        admin.setRole(Role.ADMIN);
+
+        return adminRepository.save(admin);
+    }
+
+    //get admin by id
+    public Admin getAdminById(int id) {
+
+        return adminRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Admin not found with id - " + id));
+    }
+
+    // get all admins
     public List<Admin> findAll() {
         return adminRepository.findAll();
     }
 
-    // find admin by id
-    public Admin findById(int id){
-        Optional<Admin> result = adminRepository.findById(id);
+    //update admin
+    public Admin updateAdmin(Admin updatedAdmin) {
 
-        Admin admin = null;
+        Optional<Admin> result = adminRepository.findByEmail(updatedAdmin.getEmail());
 
-        if (result.isPresent()) {
-            admin = result.get();
-        } else {
-            throw new RuntimeException("Admin id not found - " + id);
+        if (result.isPresent() && result.get().getId() != updatedAdmin.getId()) {
+            throw new IllegalArgumentException("Email already registered - " + updatedAdmin.getEmail());
         }
 
-        return admin;
+        Admin existingAdmin = getAdminById(updatedAdmin.getId());
+        existingAdmin.setName(updatedAdmin.getName());
+        existingAdmin.setEmail(updatedAdmin.getEmail());
+        existingAdmin.setPassword(updatedAdmin.getPassword());
+
+        return adminRepository.save(existingAdmin);
     }
 
-    // save admin
-    public Admin save(Admin admin) {
-        return adminRepository.save(admin);
+    //delete admin
+    public void deleteAdmin(int adminId) {
+
+        Admin admin = getAdminById(adminId); // Will throw exception if not found
+        adminRepository.deleteById(adminId);
     }
 
-    // delete admin
-    public void deleteById(int id){
-        adminRepository.deleteById(id);
-    }
 
 }

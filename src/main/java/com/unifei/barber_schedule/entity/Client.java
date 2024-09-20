@@ -1,11 +1,14 @@
 package com.unifei.barber_schedule.entity;
 
+import com.unifei.barber_schedule.security.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+//import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,6 +16,7 @@ import java.util.List;
  * A client can have multiple appointments.
  */
 @Entity
+@DiscriminatorValue("CLIENT")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,7 +39,7 @@ public class Client extends User {
      * @param password the password for the client's account
      */
     public Client(String name, String email, String phone, String password) {
-        super(name, email, phone, password); // Calls the constructor of the superclass
+        super(name, email, phone, password, Role.CLIENT); // Calls the constructor of the superclass
     }
 
 }

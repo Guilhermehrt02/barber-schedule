@@ -3,6 +3,7 @@ package com.unifei.barber_schedule.service;
 import com.unifei.barber_schedule.entity.Barber;
 import com.unifei.barber_schedule.repository.BarberRepository;
 import com.unifei.barber_schedule.repository.ServiceRepository;
+import com.unifei.barber_schedule.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,10 @@ public class BarberService {
         if (barberRepository.findByEmail(barber.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already registered - " + barber.getEmail());
         }
+
         barber.setId(0); // Ensure the barber is new
+        barber.setRole(Role.BARBER);
+
         return barberRepository.save(barber);
     }
 
@@ -39,6 +43,20 @@ public class BarberService {
 
         return barberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Barber not found with id - " + id));
+    }
+
+    //get all barbers
+    public List<Barber> findAll() {
+        return barberRepository.findAll();
+    }
+
+    //get barbers by service
+    public List<Barber> getBarbersByService(int serviceId) {
+
+        com.unifei.barber_schedule.entity.Service service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new IllegalArgumentException("Service not found"));
+
+        return barberRepository.findByServices_Id(serviceId);
     }
 
     //update barber
@@ -55,18 +73,15 @@ public class BarberService {
         existingBarber.setEmail(updatedBarber.getEmail());
         existingBarber.setPhone(updatedBarber.getPhone());
         existingBarber.setPassword(updatedBarber.getPassword());
+
         return barberRepository.save(existingBarber);
     }
 
     //delete barber
     public void deleteBarber(int barberId) {
+
         Barber barber = getBarberById(barberId); // Will throw exception if not found
         barberRepository.delete(barber);
-    }
-
-    // find all barbers
-    public List<Barber> findAll() {
-        return barberRepository.findAll();
     }
 
     //vincular barbeiro a um serviço
@@ -89,15 +104,6 @@ public class BarberService {
 
         // Salva o barbeiro atualizado
         barberRepository.save(barber);
-    }
-
-    //get barbers by service
-    public List<Barber> getBarbersByService(int serviceId) {
-
-        com.unifei.barber_schedule.entity.Service service = serviceRepository.findById(serviceId)
-                .orElseThrow(() -> new IllegalArgumentException("Service not found"));
-
-        return barberRepository.findByServices_Id(serviceId);
     }
 
 }

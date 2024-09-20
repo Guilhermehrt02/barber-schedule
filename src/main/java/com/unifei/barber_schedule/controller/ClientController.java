@@ -1,5 +1,6 @@
 package com.unifei.barber_schedule.controller;
 
+import com.unifei.barber_schedule.security.Role;
 import com.unifei.barber_schedule.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,11 +29,14 @@ public class ClientController {
     @PostMapping("/register")
     public ResponseEntity<?> registerClient(@RequestBody Client client) {
 
+        client.setRole(Role.CLIENT);
+
         Client newClient = clientService.registerClient(client);
         return ResponseEntity.status(HttpStatus.CREATED).body(newClient);
     }
 
     //Get all clients
+    @GetMapping()
     public ResponseEntity<List<Client>> findAll() {
         List<Client> clients = clientService.findAll();
         return ResponseEntity.ok(clients);

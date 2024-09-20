@@ -3,6 +3,7 @@ package com.unifei.barber_schedule.service;
 import com.unifei.barber_schedule.entity.Appointment;
 import com.unifei.barber_schedule.entity.Client;
 import com.unifei.barber_schedule.repository.ClientRepository;
+import com.unifei.barber_schedule.security.Role;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,13 @@ public class ClientService {
 
     // Register a new client
     public Client registerClient(Client client) {
+
         if (clientRepository.findByEmail(client.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already registered - " + client.getEmail());
         }
+
         client.setId(0); // Ensure the client is new
+        client.setRole(Role.CLIENT);
         return clientRepository.save(client);
     }
 
@@ -44,15 +48,19 @@ public class ClientService {
 
     // Update client
     public Client updateClient(int id, Client updatedClient) {
+
         Optional<Client> result = clientRepository.findByEmail(updatedClient.getEmail());
+
         if (result.isPresent() && result.get().getId() != id) {
             throw new IllegalArgumentException("Email already registered - " + updatedClient.getEmail());
         }
+
         Client existingClient = getClientById(id);
         existingClient.setName(updatedClient.getName());
         existingClient.setEmail(updatedClient.getEmail());
         existingClient.setPhone(updatedClient.getPhone());
         existingClient.setPassword(updatedClient.getPassword());
+
         return clientRepository.save(existingClient);
     }
 

@@ -3,6 +3,7 @@ package com.unifei.barber_schedule.controller;
 import com.unifei.barber_schedule.entity.Barber;
 import com.unifei.barber_schedule.service.BarberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/barbers")
 public class BarberController {
 
-    private BarberService barberService;
+    private final BarberService barberService;
 
     @Autowired // Dependency Injection. Be able to use the service methods without creating a new instance of it.
     public BarberController(BarberService barberService) {
@@ -23,9 +24,10 @@ public class BarberController {
 
     //register a new barber
     @PostMapping("/register")
-    public Barber registerBarber(@RequestBody Barber barber) {
+    public ResponseEntity<?> registerBarber(@RequestBody Barber barber) {
 
-        return barberService.registerBarber(barber);
+        Barber newBarber = barberService.registerBarber(barber);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBarber);
     }
 
     //Get all barbers
