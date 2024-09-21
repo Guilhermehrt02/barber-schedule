@@ -1,9 +1,9 @@
 package com.unifei.barber_schedule.service;
 
+import com.unifei.barber_schedule.domain.user.UserRole;
 import com.unifei.barber_schedule.entity.Appointment;
-import com.unifei.barber_schedule.entity.Client;
+import com.unifei.barber_schedule.domain.client.Client;
 import com.unifei.barber_schedule.repository.ClientRepository;
-import com.unifei.barber_schedule.security.Role;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class ClientService {
         }
 
         client.setId(0); // Ensure the client is new
-        client.setRole(Role.CLIENT);
+        client.setRole(UserRole.CLIENT);
         return clientRepository.save(client);
     }
 

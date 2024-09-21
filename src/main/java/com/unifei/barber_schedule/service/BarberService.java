@@ -1,9 +1,9 @@
 package com.unifei.barber_schedule.service;
 
-import com.unifei.barber_schedule.entity.Barber;
+import com.unifei.barber_schedule.domain.user.UserRole;
+import com.unifei.barber_schedule.domain.barber.Barber;
 import com.unifei.barber_schedule.repository.BarberRepository;
 import com.unifei.barber_schedule.repository.ServiceRepository;
-import com.unifei.barber_schedule.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class BarberService {
         }
 
         barber.setId(0); // Ensure the barber is new
-        barber.setRole(Role.BARBER);
+        barber.setRole(UserRole.BARBER);
 
         return barberRepository.save(barber);
     }

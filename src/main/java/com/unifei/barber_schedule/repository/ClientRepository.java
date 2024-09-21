@@ -1,6 +1,6 @@
 package com.unifei.barber_schedule.repository;
 
-import com.unifei.barber_schedule.entity.Client;
+import com.unifei.barber_schedule.domain.client.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,8 +1,8 @@
 package com.unifei.barber_schedule.service;
 
 import com.unifei.barber_schedule.entity.Appointment;
-import com.unifei.barber_schedule.entity.Barber;
-import com.unifei.barber_schedule.entity.Client;
+import com.unifei.barber_schedule.domain.barber.Barber;
+import com.unifei.barber_schedule.domain.client.Client;
 import com.unifei.barber_schedule.entity.Service;
 import com.unifei.barber_schedule.repository.AppointmentRepository;
 import com.unifei.barber_schedule.repository.BarberRepository;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 

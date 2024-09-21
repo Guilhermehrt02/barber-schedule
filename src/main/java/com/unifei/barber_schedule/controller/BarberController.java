@@ -1,6 +1,6 @@
 package com.unifei.barber_schedule.controller;
 
-import com.unifei.barber_schedule.entity.Barber;
+import com.unifei.barber_schedule.domain.barber.Barber;
 import com.unifei.barber_schedule.service.BarberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,5 +1,6 @@
 package com.unifei.barber_schedule.entity;
 
+import com.unifei.barber_schedule.domain.barber.Barber;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

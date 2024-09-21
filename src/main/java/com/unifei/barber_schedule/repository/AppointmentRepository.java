@@ -1,12 +1,10 @@
 package com.unifei.barber_schedule.repository;
 
 import com.unifei.barber_schedule.entity.Appointment;
-import com.unifei.barber_schedule.entity.Barber;
-import com.unifei.barber_schedule.entity.Client;
+import com.unifei.barber_schedule.domain.barber.Barber;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {

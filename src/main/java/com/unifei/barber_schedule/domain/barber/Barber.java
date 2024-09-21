@@ -1,6 +1,9 @@
-package com.unifei.barber_schedule.entity;
+package com.unifei.barber_schedule.domain.barber;
 
-import com.unifei.barber_schedule.security.Role;
+import com.unifei.barber_schedule.domain.user.User;
+import com.unifei.barber_schedule.domain.user.UserRole;
+import com.unifei.barber_schedule.entity.Appointment;
+import com.unifei.barber_schedule.entity.Service;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -29,7 +32,7 @@ public class Barber extends User {
     private List<Service> services = new ArrayList<>();
 
     public Barber(@NotBlank String name, @NotBlank String email, String phone, String password) {
-        super(name, email, phone, password, Role.BARBER); // Chama o construtor da superclasse
+        super(name, email, phone, password, UserRole.BARBER); // Chama o construtor da superclasse
     }
 
 }

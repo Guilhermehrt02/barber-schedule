@@ -1,11 +1,8 @@
 package com.unifei.barber_schedule.service;
 
-import com.unifei.barber_schedule.entity.Admin;
+import com.unifei.barber_schedule.domain.user.UserRole;
+import com.unifei.barber_schedule.domain.admin.Admin;
 import com.unifei.barber_schedule.repository.AdminRepository;
-import com.unifei.barber_schedule.repository.AppointmentRepository;
-import com.unifei.barber_schedule.repository.BarberRepository;
-import com.unifei.barber_schedule.repository.ClientRepository;
-import com.unifei.barber_schedule.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +29,7 @@ public class AdminService {
         }
 
         admin.setId(0); // Ensure the admin is new
-        admin.setRole(Role.ADMIN);
+        admin.setRole(UserRole.ADMIN);
 
         return adminRepository.save(admin);
     }

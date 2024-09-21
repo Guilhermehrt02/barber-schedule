@@ -1,5 +1,7 @@
 package com.unifei.barber_schedule.entity;
 
+import com.unifei.barber_schedule.domain.barber.Barber;
+import com.unifei.barber_schedule.domain.client.Client;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -7,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity

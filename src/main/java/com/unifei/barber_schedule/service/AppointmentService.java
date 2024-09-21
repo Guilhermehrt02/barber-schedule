@@ -1,7 +1,7 @@
 package com.unifei.barber_schedule.service;
 
 import com.unifei.barber_schedule.entity.Appointment;
-import com.unifei.barber_schedule.entity.Barber;
+import com.unifei.barber_schedule.domain.barber.Barber;
 import com.unifei.barber_schedule.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

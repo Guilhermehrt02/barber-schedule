@@ -1,6 +1,6 @@
 package com.unifei.barber_schedule.service;
 
-import com.unifei.barber_schedule.entity.Barber;
+import com.unifei.barber_schedule.domain.barber.Barber;
 import com.unifei.barber_schedule.entity.Service;
 import com.unifei.barber_schedule.repository.BarberRepository;
 import com.unifei.barber_schedule.repository.ServiceRepository;
