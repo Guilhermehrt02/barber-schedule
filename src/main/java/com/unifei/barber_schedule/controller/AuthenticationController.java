@@ -1,9 +1,11 @@
 package com.unifei.barber_schedule.controller;
 
 import com.unifei.barber_schedule.domain.user.AuthenticationDTO;
+import com.unifei.barber_schedule.domain.user.LoginResponseDTO;
 import com.unifei.barber_schedule.domain.user.RegisterDTO;
 import com.unifei.barber_schedule.domain.user.User;
 import com.unifei.barber_schedule.repository.UserRepository;
+import com.unifei.barber_schedule.security.TokenService;
 import com.unifei.barber_schedule.service.UserFactoryManager;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final UserFactoryManager userFactoryManager;
-//    private TokenService tokenService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager,
-                                    UserRepository userRepository,
-                                    UserFactoryManager userFactoryManager
-//                                    ,TokenService tokenService
-                                    ) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.userFactoryManager = userFactoryManager;
-//        this.tokenService = tokenService;
-    }
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserFactoryManager userFactoryManager;
+
+    @Autowired
+    private TokenService tokenService;
+
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
@@ -44,9 +42,9 @@ public class AuthenticationController {
 
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-//        var token = tokerService.generateToken((User) auth.getPrincipal());
+        var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
     @PostMapping("/register")
